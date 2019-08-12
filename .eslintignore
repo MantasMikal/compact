@@ -1,2 +1,6 @@
 node_modules
 coverage
+
+# Test files
+/test/assets-alt/a.js
+/test/assets-alt/x/a.js

@@ -8,3 +8,7 @@ yarn-error.log*
 
 # Editor
 .vscode
+
+# Test files
+/test/assets-alt/a.js
+/test/assets-alt/x/a.js
