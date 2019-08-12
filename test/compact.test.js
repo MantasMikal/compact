@@ -1,10 +1,12 @@
-var fs = require('fs'),
-  mkdirp = require('mkdirp'),
-  async = require('asyncjs')
+/* eslint-disable accessor-pairs */
+var fs = require('fs')
+var mkdirp = require('mkdirp')
+var async = require('asyncjs')
+var path = require('path')
 
-var srcPath = __dirname + '/assets/',
-  destPath = __dirname + '/tmp/',
-  altPath = __dirname + '/assets-alt/'
+var srcPath = path.join(__dirname, '/assets/')
+var destPath = path.join(__dirname, '/tmp/')
+var altPath = path.join(__dirname, '/assets-alt/')
 
 function createFiles(done) {
   mkdirp(destPath, done)
@@ -21,6 +23,7 @@ describe('compact.js', function() {
   describe('#createCompact()', function() {
     it('should error with invalid source path', function() {
       ;(function() {
+        // eslint-disable-next-line no-unused-vars
         var compact = require('../../compact').createCompact({
           srcPath: 'invalid src path'
         })
@@ -28,6 +31,7 @@ describe('compact.js', function() {
     })
 
     it('should create a missing invalid destination path', function(done) {
+      // eslint-disable-next-line no-unused-vars
       var compact = require('../../compact').createCompact({
         srcPath: srcPath,
         destPath: destPath + '/invalid-dest'
@@ -59,16 +63,16 @@ describe('compact.js', function() {
 
     it('should parse javascript config paths and namespaces', function() {
       var config = {
-          prepend: ['a.js'],
+        prepend: ['a.js'],
 
-          append: ['b.js'],
+        append: ['b.js'],
 
-          test: ['prepend', 'c.js', 'append']
-        },
-        compact = require('../../compact').createCompact({
-          srcPath: srcPath,
-          destPath: destPath
-        })
+        test: ['prepend', 'c.js', 'append']
+      }
+      var compact = require('../../compact').createCompact({
+        srcPath: srcPath,
+        destPath: destPath
+      })
 
       compact.configure(config)
       compact.ns.test.should.be.instanceOf(Object)
@@ -172,6 +176,7 @@ describe('compact.js', function() {
   })
 
   describe('#middleware()', function() {
+    // eslint-disable-next-line no-unused-vars
     var namespace, compact, compactDebug
 
     beforeEach(function() {
@@ -202,15 +207,15 @@ describe('compact.js', function() {
       compact.addNamespace('global')
       compact.middleware(['global']).should.be.instanceOf(Function)
 
-      var req,
-        res = {
-          locals: {
-            set compactJs(func) {
-              func()[0].should.match(/\/global.js$/)
-              done()
-            }
+      var req
+      var res = {
+        locals: {
+          set compactJs(func) {
+            func()[0].should.match(/\/global.js$/)
+            done()
           }
         }
+      }
 
       compact.middleware(['global'])(req, res, function() {})
     })
@@ -221,16 +226,16 @@ describe('compact.js', function() {
         .addJs('/a.js')
         .addJs('/b.js')
 
-      var req,
-        res = {
-          locals: {
-            set compactJs(func) {
-              func()[0].should.match(/\-a.js$/)
-              func()[1].should.match(/\-b.js$/)
-              done()
-            }
+      var req
+      var res = {
+        locals: {
+          set compactJs(func) {
+            func()[0].should.match(/-a.js$/)
+            func()[1].should.match(/-b.js$/)
+            done()
           }
         }
+      }
 
       compactDebug.middleware(['global'])(req, res, function() {})
     })
@@ -241,15 +246,15 @@ describe('compact.js', function() {
         .addJs('/a.js')
         .addJs('/b.js')
 
-      var req,
-        res = {
-          locals: {
-            set compactJs(func) {
-              func().should.eql(['/global.js'])
-              done()
-            }
+      var req
+      var res = {
+        locals: {
+          set compactJs(func) {
+            func().should.eql(['/global.js'])
+            done()
           }
         }
+      }
 
       compact.middleware(['global'])(req, res, function() {})
     })
@@ -266,15 +271,15 @@ describe('compact.js', function() {
         .addJs('/a.js')
         .addJs('/b.js')
 
-      var req,
-        res = {
-          locals: {
-            set compactJs(func) {
-              func().should.eql(['/custom/global.js'])
-              done()
-            }
+      var req
+      var res = {
+        locals: {
+          set compactJs(func) {
+            func().should.eql(['/custom/global.js'])
+            done()
           }
         }
+      }
 
       compactWebPath.middleware(['global'])(req, res, function() {})
     })
@@ -291,15 +296,15 @@ describe('compact.js', function() {
         .addJs('/a.js')
         .addJs('/b.js')
 
-      var req,
-        res = {
-          locals: {
-            set compactJs(func) {
-              func().should.eql(['/custom/global.js'])
-              done()
-            }
+      var req
+      var res = {
+        locals: {
+          set compactJs(func) {
+            func().should.eql(['/custom/global.js'])
+            done()
           }
         }
+      }
 
       compactWebPath.middleware(['global'])(req, res, function() {})
     })
@@ -312,18 +317,18 @@ describe('compact.js', function() {
         .addJs('/b.js')
         .addJs('/c.js')
 
-      var req,
-        res = {
-          locals: {
-            set compactJs(func) {
-              var c = func()
-              c[0].should.match(/\-large.js$/)
-              c[1].should.match(/\-a.js$/)
-              c[2].should.match(/\-b.js$/)
-              c[3].should.match(/\-c.js$/)
-            }
+      var req
+      var res = {
+        locals: {
+          set compactJs(func) {
+            var c = func()
+            c[0].should.match(/-large.js$/)
+            c[1].should.match(/-a.js$/)
+            c[2].should.match(/-b.js$/)
+            c[3].should.match(/-c.js$/)
           }
         }
+      }
 
       compactDebug.middleware(['global'])(req, res, function() {
         done()
@@ -338,15 +343,15 @@ describe('compact.js', function() {
 
       compact.addNamespace('profile').addJs('/c.js')
 
-      var req,
-        res = {
-          locals: {
-            set compactJs(func) {
-              func().should.eql(['/global-profile.js'])
-              done()
-            }
+      var req
+      var res = {
+        locals: {
+          set compactJs(func) {
+            func().should.eql(['/global-profile.js'])
+            done()
           }
         }
+      }
 
       compact.middleware(['global', 'profile'])(req, res, function() {})
     })
@@ -365,18 +370,18 @@ describe('compact.js', function() {
 
       compactDebug.addNamespace('profile').addJs('/c.js')
 
-      var req,
-        res = {
-          locals: {
-            set compactJs(func) {
-              var c = func()
-              c[0].should.match(/\-a.js$/)
-              c[1].should.match(/\-b.js$/)
-              c[2].should.match(/\-c.js$/)
-              done()
-            }
+      var req
+      var res = {
+        locals: {
+          set compactJs(func) {
+            var c = func()
+            c[0].should.match(/-a.js$/)
+            c[1].should.match(/-b.js$/)
+            c[2].should.match(/-c.js$/)
+            done()
           }
         }
+      }
 
       compactDebug.middleware(['global', 'profile'])(req, res, function() {})
     })
@@ -388,15 +393,15 @@ describe('compact.js', function() {
 
       compact.addNamespace('profile').addJs('/c.js')
 
-      var req,
-        res = {
-          locals: {
-            set compactJs(func) {
-              func().should.eql(['/global-profile.js', '/blog.js'])
-              done()
-            }
+      var req
+      var res = {
+        locals: {
+          set compactJs(func) {
+            func().should.eql(['/global-profile.js', '/blog.js'])
+            done()
           }
         }
+      }
 
       compact.middleware(['global', 'profile'], ['blog'])(
         req,
@@ -414,30 +419,30 @@ describe('compact.js', function() {
 
       compact.addNamespace('profile').addJs('/b.js')
 
-      var doneCount = 0,
-        req,
-        globalRes = {
-          locals: {
-            set compactJs(func) {
-              func().should.eql(['/global.js'])
-              doneCount += 1
-              if (doneCount === 2) {
-                done()
-              }
-            }
-          }
-        },
-        profileRes = {
-          locals: {
-            set compactJs(func) {
-              func().should.eql(['/profile.js'])
-              doneCount += 1
-              if (doneCount === 2) {
-                done()
-              }
+      var doneCount = 0
+      var req
+      var globalRes = {
+        locals: {
+          set compactJs(func) {
+            func().should.eql(['/global.js'])
+            doneCount += 1
+            if (doneCount === 2) {
+              done()
             }
           }
         }
+      }
+      var profileRes = {
+        locals: {
+          set compactJs(func) {
+            func().should.eql(['/profile.js'])
+            doneCount += 1
+            if (doneCount === 2) {
+              done()
+            }
+          }
+        }
+      }
 
       compact.middleware(['global'])(req, globalRes, function() {
         compact.middleware(['profile'])(req, profileRes, function() {})
@@ -448,14 +453,14 @@ describe('compact.js', function() {
       compact.addNamespace('alternative', altPath)
       compact.ns.alternative.addJs('a.js')
 
-      var req,
-        res = {
-          locals: function(helper) {}
-        }
+      var req
+      var res = {
+        locals: function(helper) {}
+      }
 
       compact.middleware(['alternative'])(req, res, function() {
-        var compacted = fs.readFileSync(destPath + '/alternative.js', 'utf8'),
-          raw = fs.readFileSync(altPath + '/a.js', 'utf8')
+        var compacted = fs.readFileSync(destPath + '/alternative.js', 'utf8')
+        var raw = fs.readFileSync(altPath + '/a.js', 'utf8')
 
         raw.should.equal(compacted + ';')
         done()
@@ -476,15 +481,15 @@ describe('compact.js', function() {
 
         compactDebug.addNamespace('alternative', altPath).addJs('/a.js')
 
-        var req,
-          res = {
-            locals: {
-              set compactJs(func) {
-                func()[0].should.not.equal(func()[1])
-                done()
-              }
+        var req
+        var res = {
+          locals: {
+            set compactJs(func) {
+              func()[0].should.not.equal(func()[1])
+              done()
             }
           }
+        }
 
         compactDebug.middleware(['global', 'alternative'])(
           req,
@@ -509,15 +514,15 @@ describe('compact.js', function() {
           .addJs('/a.js')
           .addJs('/x/a.js')
 
-        var req,
-          res = {
-            locals: {
-              set compactJs(func) {
-                func()[0].should.not.equal(func()[1])
-                done()
-              }
+        var req
+        var res = {
+          locals: {
+            set compactJs(func) {
+              func()[0].should.not.equal(func()[1])
+              done()
             }
           }
+        }
 
         compactDebug.middleware(['global'])(req, res, function() {})
       }
@@ -529,16 +534,16 @@ describe('compact.js', function() {
 
       compactDebug.addNamespace('global').addJs('/tmp.js')
 
-      var results = [content, ''],
-        i = 0,
-        req,
-        res = {
-          locals: function(helper) {
-            fs.readFileSync(destPath + helper.compactJs()[0])
-              .toString()
-              .should.equal(results[i++])
-          }
+      var results = [content, '']
+      var i = 0
+      var req
+      var res = {
+        locals: function(helper) {
+          fs.readFileSync(destPath + helper.compactJs()[0])
+            .toString()
+            .should.equal(results[i++])
         }
+      }
 
       compactDebug.middleware(['global'])(req, res, function() {
         fs.unlinkSync(srcPath + '/tmp.js')

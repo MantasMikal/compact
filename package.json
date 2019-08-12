@@ -10,7 +10,6 @@
   "main": "./lib/compact.js",
   "scripts": {
     "lint": "eslint -f unix .",
-    "pretest": "npm run-script lint",
     "prettier": "prettier --write '**/*.js'",
     "test": "mocha -r should -R spec"
   },
