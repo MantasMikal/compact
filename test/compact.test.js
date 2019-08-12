@@ -37,7 +37,7 @@ describe('compact.js', function() {
 
     it('should succeed with valid paths', function() {
       require('../../compact')
-        .createCompact({ srcPath: srcPath, destPath: destPath }).should.be.a('object');
+        .createCompact({ srcPath: srcPath, destPath: destPath }).should.be.instanceOf(Object);
     });
 
   });
@@ -72,7 +72,7 @@ describe('compact.js', function() {
       compact = require('../../compact').createCompact({ srcPath: srcPath, destPath: destPath });
 
       compact.configure(config);
-      compact.ns.test.should.be.a('object');
+      compact.ns.test.should.be.instanceOf(Object);
       compact.ns.test.javascriptFiles.length.should.equal(3);
     });
   });
@@ -90,7 +90,7 @@ describe('compact.js', function() {
     describe('access via .ns', function() {
       it('should be accessible via ', function() {
         compact.ns.global.should = Object.prototype.should;
-        compact.ns.global.should.be.a('object');
+        compact.ns.global.should.be.instanceOf(Object);
       });
 
       it('should not be able to mess with a namespace', function() {
@@ -148,7 +148,7 @@ describe('compact.js', function() {
       });
 
       it('should succeed with valid namespace', function() {
-        compact.addNamespace('global').addJs.should.be.a('function');
+        compact.addNamespace('global').addJs.should.be.instanceOf(Function);
       });
 
       it('should add a source path to the lookup chain when given', function () {
@@ -193,13 +193,13 @@ describe('compact.js', function() {
     });
 
     it('should succeed with empty array as first parameter', function() {
-      compact.middleware([]).should.be.a('function');
+      compact.middleware([]).should.be.instanceOf(Function);
     });
 
 
     it('should succeed and return nothing if a namespace has no js files added', function(done) {
       compact.addNamespace('global');
-      compact.middleware(['global']).should.be.a('function');
+      compact.middleware(['global']).should.be.instanceOf(Function);
 
       var req
         , res = {
